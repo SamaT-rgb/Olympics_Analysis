@@ -1,95 +1,25 @@
-🏅 Olympics Analysis
-A data analytics project exploring trends, patterns, and insights in the Olympic Games using Python, Pandas, Matplotlib & Seaborn.
+# 🏅 Olympics Data Analysis
 
-📂 Repository Structure
-bash
-Copy
-Edit
-/
-├── summer.csv                      # Primary dataset: Summer Olympics data
-├── Summer_Olympics_Analysis.ipynb  # Interactive Jupyter notebook with visualizations and findings
-└── README.md                       # Project overview and usage instructions
-🔍 Project Overview
-This project analyzes Summer Olympic data to answer questions like:
+<p align="center">
+  <img src="banner-image.png" alt="Olympics Analysis Banner" width="800"/>
+</p>
 
-Which countries have won the most medals over time?
+A deep-dive analytical project visualizing trends, patterns, and insights from the Summer Olympics dataset using Python, Pandas, Matplotlib, and Seaborn.
 
-Trends in athlete participation per sport and year
+---
 
-Distribution of medals by gender
+## 📊 Overview
 
-Evolution of medal counts for top-performing nations
+This project analyzes Olympic history to answer compelling questions such as:
 
-Correlations between GDP/population and medal success (optional enhancement)
+- 🥇 Which countries dominate the medal tally?
+- 🧍‍♂️ How has gender participation evolved over time?
+- 🧠 What are the trends in athlete performance across sports?
+- 🔥 How has the distribution of sports and events changed year to year?
 
-🛠️ Features & Highlights
-Time-series visualizations of medal counts by country
+Whether you're a data enthusiast or a sports fan, this project provides insightful visualizations and clear storytelling through code.
 
-Bar charts comparing top countries per Olympics
+---
 
-Pie charts for gender distribution
+## 🗂️ Project Structure
 
-Heatmaps to show sport vs. year medal density
-
-Insights on participation trends and rankings
-
-📌 Getting Started
-1. Prerequisites
-Python 3.8+
-
-Jupyter Notebook or JupyterLab
-
-Recommended environment management: venv or conda
-
-2. Install Dependencies
-bash
-Copy
-Edit
-pip install pandas matplotlib seaborn numpy
-3. Run the Notebook
-bash
-Copy
-Edit
-jupyter notebook Summer_Olympics_Analysis.ipynb
-Execute each cell to see the data analysis and visual outputs.
-
-🔧 Customization Tips
-Modify filters to focus on specific years, countries, or sports
-
-Add GDP/population merge to explore socioeconomic factors
-
-Customize plots (styles, colors, annotations) to match your preferences
-
-👥 Contributing
-Contributions are welcome! Whether it’s cleaning data, adding new metrics, or enhancing visualizations:
-
-Fork the repo
-
-Create a feature branch (git checkout -b enhancing-vis)
-
-Commit changes with descriptive messages
-
-Open a pull request
-
-📚 Dataset Source
-The summer.csv file contains historical data from various Olympic Games and covers:
-
-Athlete name, country, year, sport, event, and medal type
-
-Gender and participation info
-
-If you’d like, please add a link or citation to the exact source.
-
-📝 License
-Distributed under the MIT License. See LICENSE for details.
-
-🎯 Project Roadmap
-Potential next steps:
-
-Merge with economic/socio-demographic data for correlation analysis
-
-Create a web dashboard using Dash or Streamlit
-
-Expand to include Winter Olympics
-
-Offer interactive visualizations via Plotly
