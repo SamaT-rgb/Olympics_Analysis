@@ -45,8 +45,13 @@ Whether you're a data enthusiast or a sports fan, this project provides insightf
 git clone https://github.com/SamaT-rgb/Olympics_Analysis.git
 cd Olympics_Analysis
 pip install pandas matplotlib seaborn numpy
+``` 
 
-jupyter notebook Summer_Olympics_Analysis.ipynb```
+``` 
+jupyter notebook Summer_Olympics_Analysis.ipynb
+``` 
+
+
 
 
 📌 Key Visuals & Insights
