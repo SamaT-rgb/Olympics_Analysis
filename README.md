@@ -46,3 +46,44 @@ git clone https://github.com/SamaT-rgb/Olympics_Analysis.git
 cd Olympics_Analysis
 pip install pandas matplotlib seaborn numpy
 
+jupyter notebook Summer_Olympics_Analysis.ipynb
+
+
+📌 Key Visuals & Insights
+Here are some of the insights you can expect:
+
+📈 Medal Trends Over Time
+
+🌍 Top Countries and Sport-wise Dominance
+
+👩‍🦰👨‍🦱 Gender-wise Participation
+
+🧬 Heatmaps of Sports vs. Years
+
+🏃 Athlete Age Distribution by Sport
+
+💡 Add screenshots or GIFs here to showcase your visualizations!
+
+🌱 Future Improvements
+🔄 Add interactive dashboards (Streamlit or Dash)
+
+🌐 Merge with GDP / population datasets for correlation insights
+
+❄️ Expand to Winter Olympics
+
+🤝 Contributing
+Contributions are welcome! Here’s how:
+
+Fork the repo
+
+Create your branch (git checkout -b feature-xyz)
+
+Commit your changes
+
+Push to your branch
+
+Open a Pull Request
+
+📚 Data Source
+summer.csv is derived from publicly available Olympic datasets.
+Please credit the source if using this beyond personal/educational use.
