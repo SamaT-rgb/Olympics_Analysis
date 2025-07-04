@@ -22,4 +22,27 @@ Whether you're a data enthusiast or a sports fan, this project provides insightf
 ---
 
 ## 🗂️ Project Structure
+📁 Olympics_Analysis/
+├── 📄 summer.csv # Cleaned dataset of Summer Olympics
+├── 📓 Summer_Olympics_Analysis.ipynb # Jupyter notebook with all analysis & visuals
+└── 📄 README.md # This file
+
+## 🚀 Getting Started
+
+### ✅ Requirements
+
+- Python 3.8+
+- Jupyter Notebook
+- Libraries:
+  - `pandas`
+  - `matplotlib`
+  - `seaborn`
+  - `numpy`
+
+### 📥 Installation
+
+```bash
+git clone https://github.com/SamaT-rgb/Olympics_Analysis.git
+cd Olympics_Analysis
+pip install pandas matplotlib seaborn numpy
 
