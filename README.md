@@ -1,8 +1,9 @@
 # 🏅 Olympics Data Analysis
 
 <p align="center">
-  <img src="[banner-image.png" alt="Olympics Analysis Banner](https://github.com/SamaT-rgb/Olympics_Analysis/blob/main/data.jpg)" width="800"/>
+  <img src="https://github.com/SamaT-rgb/Olympics_Analysis/blob/main/data.jpg?raw=true" alt="Olympics Analysis Banner" width="800"/>
 </p>
+
 
 A deep-dive analytical project visualizing trends, patterns, and insights from the Summer Olympics dataset using Python, Pandas, Matplotlib, and Seaborn.
 
