@@ -4,18 +4,23 @@ import pandas as pd
 def fetch_medal_tally(df, year, country):
     """
     Fetch medal tally for a given year and country.
-    
+
     Args:
         df: DataFrame containing Olympic data
         year: Specific year or 'Overall'
         country: Specific country or 'Overall'
-    
+
     Returns:
         DataFrame with medal tally
     """
     try:
+        # Validate required columns
+        required_cols = ['Team', 'NOC', 'Games', 'Year', 'City', 'Sport', 'Event', 'Medal', 'region']
+        if not all(col in df.columns for col in required_cols):
+            raise ValueError("Missing required columns in DataFrame")
+
         medal_df = df.drop_duplicates(subset=['Team', 'NOC', 'Games', 'Year', 'City', 'Sport', 'Event', 'Medal'])
-        
+
         flag = 0
         if year == 'Overall' and country == 'Overall':
             temp_df = medal_df
@@ -26,15 +31,22 @@ def fetch_medal_tally(df, year, country):
             temp_df = medal_df[medal_df['Year'] == int(year)]
         else:
             temp_df = medal_df[(medal_df['Year'] == int(year)) & (medal_df['region'] == country)]
-        
+
+        # Use one-hot encoded medal columns
+        medal_columns = ['Medal_Gold', 'Medal_Silver', 'Medal_Bronze']
+        if not all(col in df.columns for col in medal_columns):
+            raise ValueError("Missing one-hot encoded medal columns (Medal_Gold, Medal_Silver, Medal_Bronze)")
+
         if flag == 1:
-            x = temp_df.groupby('Year').sum()[['Gold', 'Silver', 'Bronze']].sort_values('Year').reset_index()
+            x = temp_df.groupby('Year').sum()[medal_columns].sort_values('Year').reset_index()
         else:
-            x = temp_df.groupby('region').sum()[['Gold', 'Silver', 'Bronze']].sort_values('Gold', ascending=False).reset_index()
-        
+            x = temp_df.groupby('region').sum()[medal_columns].sort_values('Medal_Gold', ascending=False).reset_index()
+
+        # Rename columns to match expected output
+        x = x.rename(columns={'Medal_Gold': 'Gold', 'Medal_Silver': 'Silver', 'Medal_Bronze': 'Bronze'})
         x['total'] = x['Gold'] + x['Silver'] + x['Bronze']
         x[['Gold', 'Silver', 'Bronze', 'total']] = x[['Gold', 'Silver', 'Bronze', 'total']].astype(int)
-        
+
         return x if not x.empty else pd.DataFrame(columns=['Year', 'region', 'Gold', 'Silver', 'Bronze', 'total'])
     except Exception as e:
         print(f"Error in fetch_medal_tally: {str(e)}")
@@ -43,7 +55,7 @@ def fetch_medal_tally(df, year, country):
 def country_year_list(df):
     """
     Get unique years and countries from the DataFrame.
-    
+
     Returns:
         tuple: (sorted years list with 'Overall', sorted countries list with 'Overall')
     """
@@ -64,15 +76,17 @@ def country_year_list(df):
 def data_over_time(df, col):
     """
     Calculate data distribution over time for a specific column.
-    
+
     Args:
         df: Input DataFrame
         col: Column to analyze
-    
+
     Returns:
         DataFrame with year-wise counts
     """
     try:
+        if col not in df.columns:
+            raise ValueError(f"Column {col} not found in DataFrame")
         nations_over_time = df.drop_duplicates(['Year', col])
         count_df = nations_over_time['Year'].value_counts().reset_index()
         count_df.columns = ['Year', 'count']
@@ -84,16 +98,17 @@ def data_over_time(df, col):
 def yearwise_medal_tally(df, country):
     """
     Get year-wise medal tally for a specific country.
-    
+
     Args:
         df: Input DataFrame
         country: Country name
-    
+
     Returns:
         DataFrame with year-wise medal counts
     """
     try:
-        temp_df = df[df['Medal'].notnull()].drop_duplicates(subset=['Team', 'NOC', 'Games', 'Year', 'City', 'Sport', 'Event', 'Medal'])
+        temp_df = df[df['Medal'].notnull()].drop_duplicates(
+            subset=['Team', 'NOC', 'Games', 'Year', 'City', 'Sport', 'Event', 'Medal'])
         new_df = temp_df[temp_df['region'] == country]
         final_df = new_df.groupby('Year').count()['Medal'].reset_index()
         return final_df
@@ -104,11 +119,11 @@ def yearwise_medal_tally(df, country):
 def most_successful_countrywise(df, country):
     """
     Get most successful athletes for a specific country.
-    
+
     Args:
         df: Input DataFrame
         country: Country name
-    
+
     Returns:
         DataFrame with top 10 athletes
     """
@@ -125,11 +140,11 @@ def most_successful_countrywise(df, country):
 def most_successful(df, sport):
     """
     Get most successful athletes for a specific sport or overall.
-    
+
     Args:
         df: Input DataFrame
         sport: Sport name or 'Overall'
-    
+
     Returns:
         DataFrame with top 10 athletes
     """
@@ -138,7 +153,8 @@ def most_successful(df, sport):
         most_successful_df = temp_df[temp_df['Medal'].notnull()].groupby('Name').count()['Medal'].reset_index()
         most_successful_df.columns = ['Name', 'Medal Count']
         most_successful_df = most_successful_df.sort_values(by='Medal Count', ascending=False).head(10)
-        most_successful_df = most_successful_df.merge(df[['Name', 'Sport', 'Medal']], on='Name', how='left').drop_duplicates('Name')
+        most_successful_df = most_successful_df.merge(df[['Name', 'Sport', 'Medal']], on='Name',
+                                                      how='left').drop .duplicates('Name')
         return most_successful_df
     except Exception as e:
         print(f"Error in most_successful: {str(e)}")
@@ -147,11 +163,11 @@ def most_successful(df, sport):
 def weight_v_height(df, sport):
     """
     Get height vs weight data for athletes.
-    
+
     Args:
         df: Input DataFrame
         sport: Sport name or 'Overall'
-    
+
     Returns:
         DataFrame with height and weight data
     """
@@ -166,11 +182,11 @@ def weight_v_height(df, sport):
 def country_event_heatmap(df, selected_country):
     """
     Create a heatmap of events for a specific country.
-    
+
     Args:
         df: Input DataFrame
         selected_country: Country name
-    
+
     Returns:
         Pivot table with event counts
     """
@@ -185,26 +201,26 @@ def country_event_heatmap(df, selected_country):
 def men_vs_women(df, selected_sport='Overall'):
     """
     Compare male vs female participation over time.
-    
+
     Args:
         df: Input DataFrame
         selected_sport: Sport name or 'Overall'
-    
+
     Returns:
         DataFrame with male and female participation counts
     """
     try:
         athlete_df = df.drop_duplicates(subset=['Name', 'region'])
         if selected_sport != 'Overall':
-            athlete_df = athlete_df[athlete_df['Sport'] == sport]
-        
+            athlete_df = athlete_df[athlete_df['Sport'] == selected_sport]
+
         men = athlete_df[athlete_df['Sex'] == 'M'].groupby('Year').count()['Name'].reset_index()
         women = athlete_df[athlete_df['Sex'] == 'F'].groupby('Year').count()['Name'].reset_index()
-        
+
         final = men.merge(women, on='Year', how='left')
         final.rename(columns={'Name_x': 'Male', 'Name_y': 'Female'}, inplace=True)
         final.fillna(0, inplace=True)
-        
+
         return final
     except Exception as e:
         print(f"Error in men_vs_women: {str(e)}")
