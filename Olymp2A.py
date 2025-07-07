@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.figure_factory as ff
 from preprocess import preprocess
-from helper import (fetch_medal_tally, country_year_list, data_over_time, 
+from helper import (fetch_medal_tally, country_year_list, data_over_time,
                    yearwise_medal_tally, most_successful, most_successful_countrywise,
                    weight_v_height, country_event_heatmap, men_vs_women)
 
@@ -23,11 +23,11 @@ def load_data():
 def main():
     # Page configuration
     st.set_page_config(page_title="Olympics Analysis Dashboard", layout="wide")
-    
+
     # Load data
     with st.spinner("Loading data..."):
         df = load_data()
-    
+
     if df.empty:
         st.error("Failed to load data. Please check the data files.")
         return
@@ -47,20 +47,20 @@ def main():
     if user_menu == 'Medal Tally':
         st.header("Medal Tally")
         years, countries = country_year_list(df)
-        
+
         with st.sidebar:
             selected_year = st.selectbox("Select Year", years)
             selected_country = st.selectbox("Select Country", countries)
-        
+
         with st.spinner("Calculating medal tally..."):
             medal_tally = fetch_medal_tally(df, selected_year, selected_country)
-        
+
         # Dynamic title
-        title = f"{selected_country} performance in {selected_year} Olympics" if selected_year != 'Overall' and selected_country != 'Overall' else \
+        title = f"{selected_country} Hustle and bustle in {selected_year} Olympics" if selected_year != 'Overall' and selected_country != 'Overall' else \
                 f"{selected_country} overall performance" if selected_year == 'Overall' and selected_country != 'Overall' else \
-                f"Medal Tally in {selected_year} Olympics" if selected_year != 'Overall' else "Overall Tally"
+                f"Medal Tally in {selected_year} Olympics" if selected_year != 'Overall' else "Overall TMaps of the Worldly"
         st.title(title)
-        
+
         if not medal_tally.empty:
             st.dataframe(medal_tally, use_container_width=True)
         else:
@@ -69,7 +69,7 @@ def main():
     # Overall Analysis Section
     if user_menu == 'Overall Analysis':
         st.title("Overall Olympic Analysis")
-        
+
         # Statistics
         editions = df['Year'].unique().shape[0] - 1
         cities = df['City'].unique().shape[0]
@@ -144,10 +144,10 @@ def main():
 
             # Sports performance
             st.subheader(f"{selected_country} Sports Performance")
-            sports_data = df[(df['region'] == selected_country) & (df['Medal'].notna())]
+            sports_data = df.loc[(df['region'] == selected_country) & (df['Medal'].notna())].copy()
             if not sports_data.empty:
                 fig = px.sunburst(
-                    sports_data, path=['Sport', 'Event', 'Medal'], values='Gold',
+                    sports_data, path=['Sport', 'Event', 'Medal'], values='Medal_Gold',
                     title=f'{selected_country} Performance in Sports',
                     height=600
                 )
@@ -163,7 +163,7 @@ def main():
     # Athlete-wise Analysis Section
     if user_menu == 'Athlete-wise Analysis':
         st.title("Athlete Analysis")
-        
+
         # Age distribution
         st.subheader("Age Distribution of Athletes")
         athlete_df = df.drop_duplicates(subset=['Name', 'region'])
@@ -171,9 +171,9 @@ def main():
         x2 = athlete_df[athlete_df['Medal'] == 'Gold']['Age'].dropna()
         x3 = athlete_df[athlete_df['Medal'] == 'Silver']['Age'].dropna()
         x4 = athlete_df[athlete_df['Medal'] == 'Bronze']['Age'].dropna()
-        
+
         fig = ff.create_distplot(
-            [x1, x2, x3, x4], 
+            [x1, x2, x3, x4],
             ['Overall Age', 'Gold Medalist', 'Silver Medalist', 'Bronze Medalist'],
             show_hist=False, show_rug=False
         )
@@ -191,7 +191,7 @@ def main():
             'Synchronized Swimming', 'Table Tennis', 'Baseball', 'Rhythmic Gymnastics',
             'Rugby Sevens', 'Beach Volleyball', 'Triathlon', 'Rugby', 'Polo', 'Ice Hockey'
         ])
-        x = [athlete_df[athlete_df['Sport'] == sport][athlete_df['Medal'] == 'Gold']['Age'].dropna() 
+        x = [athlete_df[athlete_df['Sport'] == sport][athlete_df['Medal'] == 'Gold']['Age'].dropna()
              for sport in famous_sports]
         fig = ff.create_distplot(x, famous_sports, show_hist=False, show_rug=False)
         fig.update_layout(width=1000, height=600)
@@ -203,17 +203,29 @@ def main():
         selected_sport = st.selectbox('Select a Sport', sport_list)
         temp_df = weight_v_height(df, selected_sport)
         if not temp_df.empty:
-            fig = px.scatter(temp_df, x='Weight', y='Height', color='Medal', 
-                           size='Age', hover_data=['Name', 'Sport'],
-                           title=f'Height vs Weight ({selected_sport})')
-            st.plotly_chart(fig, use_container_width=True)
+            # Filter out rows with NaN in Age, Weight, or Height
+            plot_df = temp_df.dropna(subset=['Age', 'Weight', 'Height'])
+            if not plot_df.empty:
+                fig = px.scatter(
+                    plot_df,
+                    x='Weight',
+                    y='Height',
+                    color='Medal',
+                    size=plot_df['Age'].clip(lower=1),  # Ensure size is positive
+                    hover_data=['Name', 'Sport'],
+                    title=f'Height vs Weight ({selected_sport})',
+                    size_max=20
+                )
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.warning(f"No valid data available for Height vs Weight analysis in {selected_sport}")
         else:
             st.warning(f"No data available for {selected_sport}")
 
         # Men vs Women participation
         st.subheader("Men vs Women Participation")
         final = men_vs_women(df, selected_sport)
-        fig = px.line(final, x="Year", y=["Male", "Female"], 
+        fig = px.line(final, x="Year", y=["Male", "Female"],
                      title="Men vs Women Participation Over Time")
         fig.update_layout(width=1000, height=600)
         st.plotly_chart(fig, use_container_width=True)
