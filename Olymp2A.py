@@ -55,10 +55,9 @@ def main():
         with st.spinner("Calculating medal tally..."):
             medal_tally = fetch_medal_tally(df, selected_year, selected_country)
 
-        # Dynamic title
-        title = f"{selected_country} Hustle and bustle in {selected_year} Olympics" if selected_year != 'Overall' and selected_country != 'Overall' else \
+        title = f"{selected_country} performance in {selected_year} Olympics" if selected_year != 'Overall' and selected_country != 'Overall' else \
                 f"{selected_country} overall performance" if selected_year == 'Overall' and selected_country != 'Overall' else \
-                f"Medal Tally in {selected_year} Olympics" if selected_year != 'Overall' else "Overall TMaps of the Worldly"
+                f"Medal Tally in {selected_year} Olympics" if selected_year != 'Overall' else "Overall Tally"
         st.title(title)
 
         if not medal_tally.empty:
@@ -70,7 +69,6 @@ def main():
     if user_menu == 'Overall Analysis':
         st.title("Overall Olympic Analysis")
 
-        # Statistics
         editions = df['Year'].unique().shape[0] - 1
         cities = df['City'].unique().shape[0]
         sports = df['Sport'].unique().shape[0]
@@ -89,27 +87,22 @@ def main():
             st.metric("Sports", sports)
             st.metric("Athletes", athletes)
 
-        # Visualizations
         with st.spinner("Generating visualizations..."):
-            # Nations over time
             st.subheader("Participating Nations Over Time")
             nations_over_time = data_over_time(df, 'region')
             fig = px.line(nations_over_time, x="Year", y="count", title="Participating Nations")
             st.plotly_chart(fig, use_container_width=True)
 
-            # Events over time
             st.subheader("Events Over Time")
             events_over_time = data_over_time(df, 'Event')
             fig = px.line(events_over_time, x="Year", y="count", title="Events")
             st.plotly_chart(fig, use_container_width=True)
 
-            # Athletes over time
             st.subheader("Athletes Over Time")
             athlete_over_time = data_over_time(df, 'Name')
             fig = px.line(athlete_over_time, x="Year", y="count", title="Athletes")
             st.plotly_chart(fig, use_container_width=True)
 
-            # Events heatmap
             st.subheader("Events by Sport Over Time")
             fig, ax = plt.subplots(figsize=(20, 20))
             x = df.drop_duplicates(['Year', 'Sport', 'Event'])
@@ -119,12 +112,14 @@ def main():
             )
             st.pyplot(fig)
 
-            # Most successful athletes
             st.subheader("Most Successful Athletes")
             sport_list = ['Overall'] + sorted(df['Sport'].unique().tolist())
-            selected_sport = st.selectbox('Select a Sport', sport_list)
+            selected_sport = st.selectbox('Select a Sport', sport_list, index=0)
             x = most_successful(df, selected_sport)
-            st.dataframe(x, use_container_width=True)
+            if not x.empty:
+                st.dataframe(x, use_container_width=True)
+            else:
+                st.warning(f"No successful athletes data available for {selected_sport}. Check if the sport has medal data.")
 
     # Country-wise Analysis Section
     if user_menu == 'Country-wise Analysis':
@@ -133,7 +128,6 @@ def main():
         selected_country = st.sidebar.selectbox('Select a Country', country_list)
 
         if selected_country != 'Overall':
-            # Medal tally
             st.subheader(f"{selected_country} Medal Tally")
             medal_tally_df = yearwise_medal_tally(df, selected_country)
             if not medal_tally_df.empty:
@@ -142,7 +136,6 @@ def main():
             else:
                 st.warning(f"No medal data available for {selected_country}")
 
-            # Sports performance
             st.subheader(f"{selected_country} Sports Performance")
             sports_data = df.loc[(df['region'] == selected_country) & (df['Medal'].notna())].copy()
             if not sports_data.empty:
@@ -155,16 +148,17 @@ def main():
             else:
                 st.warning(f"No sports performance data available for {selected_country}")
 
-            # Top athletes
             st.subheader(f"Top Athletes from {selected_country}")
             top10_df = most_successful_countrywise(df, selected_country)
-            st.dataframe(top10_df, use_container_width=True)
+            if not top10_df.empty:
+                st.dataframe(top10_df, use_container_width=True)
+            else:
+                st.warning(f"No top athletes data available for {selected_country}")
 
     # Athlete-wise Analysis Section
     if user_menu == 'Athlete-wise Analysis':
         st.title("Athlete Analysis")
 
-        # Age distribution
         st.subheader("Age Distribution of Athletes")
         athlete_df = df.drop_duplicates(subset=['Name', 'region'])
         x1 = athlete_df['Age'].dropna()
@@ -180,7 +174,6 @@ def main():
         fig.update_layout(width=1000, height=600)
         st.plotly_chart(fig, use_container_width=True)
 
-        # Age distribution by sport
         st.subheader("Age Distribution by Sport (Gold Medalists)")
         famous_sports = sorted([
             'Basketball', 'Judo', 'Football', 'Tug-Of-War', 'Athletics',
@@ -197,13 +190,11 @@ def main():
         fig.update_layout(width=1000, height=600)
         st.plotly_chart(fig, use_container_width=True)
 
-        # Height vs Weight
         st.subheader('Height vs Weight Analysis')
         sport_list = ['Overall'] + sorted(df['Sport'].unique().tolist())
         selected_sport = st.selectbox('Select a Sport', sport_list)
         temp_df = weight_v_height(df, selected_sport)
         if not temp_df.empty:
-            # Filter out rows with NaN in Age, Weight, or Height
             plot_df = temp_df.dropna(subset=['Age', 'Weight', 'Height'])
             if not plot_df.empty:
                 fig = px.scatter(
@@ -211,7 +202,7 @@ def main():
                     x='Weight',
                     y='Height',
                     color='Medal',
-                    size=plot_df['Age'].clip(lower=1),  # Ensure size is positive
+                    size=plot_df['Age'].clip(lower=1),
                     hover_data=['Name', 'Sport'],
                     title=f'Height vs Weight ({selected_sport})',
                     size_max=20
@@ -222,7 +213,6 @@ def main():
         else:
             st.warning(f"No data available for {selected_sport}")
 
-        # Men vs Women participation
         st.subheader("Men vs Women Participation")
         final = men_vs_women(df, selected_sport)
         fig = px.line(final, x="Year", y=["Male", "Female"],
