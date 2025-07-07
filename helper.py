@@ -14,7 +14,6 @@ def fetch_medal_tally(df, year, country):
         DataFrame with medal tally
     """
     try:
-        # Validate required columns
         required_cols = ['Team', 'NOC', 'Games', 'Year', 'City', 'Sport', 'Event', 'Medal', 'region']
         if not all(col in df.columns for col in required_cols):
             raise ValueError("Missing required columns in DataFrame")
@@ -32,7 +31,6 @@ def fetch_medal_tally(df, year, country):
         else:
             temp_df = medal_df[(medal_df['Year'] == int(year)) & (medal_df['region'] == country)]
 
-        # Use one-hot encoded medal columns
         medal_columns = ['Medal_Gold', 'Medal_Silver', 'Medal_Bronze']
         if not all(col in df.columns for col in medal_columns):
             raise ValueError("Missing one-hot encoded medal columns (Medal_Gold, Medal_Silver, Medal_Bronze)")
@@ -42,7 +40,6 @@ def fetch_medal_tally(df, year, country):
         else:
             x = temp_df.groupby('region').sum()[medal_columns].sort_values('Medal_Gold', ascending=False).reset_index()
 
-        # Rename columns to match expected output
         x = x.rename(columns={'Medal_Gold': 'Gold', 'Medal_Silver': 'Silver', 'Medal_Bronze': 'Bronze'})
         x['total'] = x['Gold'] + x['Silver'] + x['Bronze']
         x[['Gold', 'Silver', 'Bronze', 'total']] = x[['Gold', 'Silver', 'Bronze', 'total']].astype(int)
@@ -150,11 +147,24 @@ def most_successful(df, sport):
     """
     try:
         temp_df = df[df['Sport'] == sport] if sport != 'Overall' else df
+        if temp_df.empty:
+            print(f"No data available for sport: {sport}")
+            return pd.DataFrame()
+
+        # Check if Medal column exists and has valid data
+        if 'Medal' not in temp_df.columns or temp_df['Medal'].notnull().sum() == 0:
+            print(f"No medal data found for sport: {sport}")
+            return pd.DataFrame()
+
         most_successful_df = temp_df[temp_df['Medal'].notnull()].groupby('Name').count()['Medal'].reset_index()
+        if most_successful_df.empty:
+            print(f"No athletes with medals found for sport: {sport}")
+            return pd.DataFrame()
+
         most_successful_df.columns = ['Name', 'Medal Count']
         most_successful_df = most_successful_df.sort_values(by='Medal Count', ascending=False).head(10)
         most_successful_df = most_successful_df.merge(df[['Name', 'Sport', 'Medal']], on='Name',
-                                                      how='left').drop .duplicates('Name')
+                                                     how='left').drop_duplicates('Name')
         return most_successful_df
     except Exception as e:
         print(f"Error in most_successful: {str(e)}")
