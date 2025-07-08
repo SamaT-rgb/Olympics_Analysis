@@ -40,3 +40,8 @@ matplotlib
 seaborn
 
 📦 Installation
+
+
+git clone https://github.com/SamaT-rgb/Olympics_Analysis.git
+cd Olympics_Analysis
+pip install pandas numpy matplotlib seaborn
