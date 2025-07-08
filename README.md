@@ -22,3 +22,21 @@ Whether you're a data enthusiast or a sports fan, this project brings the Olympi
 ├── 📄 summer.csv                     # Cleaned dataset of Summer Olympics
 ├── 📓 Summer_Olympics_Analysis.ipynb # Main notebook with all analysis and visuals
 └── 📄 README.md                      # Project documentation
+
+🚀 Getting Started
+✅ Requirements
+Python 3.8+
+
+Jupyter Notebook
+
+Libraries:
+
+pandas
+
+numpy
+
+matplotlib
+
+seaborn
+
+📦 Installation
