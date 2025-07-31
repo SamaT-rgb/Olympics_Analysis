@@ -65,12 +65,12 @@ Here are some of the visualizations and insights you'll find:
 
 📸 [Add screenshots or animated GIFs here to highlight your visuals]
 
-🌱 Future Improvements
-🔄 Build interactive dashboards using Streamlit or Plotly Dash
+ Future Improvements
+ Build interactive dashboards using Streamlit or Plotly Dash
 
-🌐 Integrate with external data (e.g., GDP, population) for correlation analysis
+ Integrate with external data (e.g., GDP, population) for correlation analysis
 
-❄️ Expand analysis to include Winter Olympics
+❄ Expand analysis to include Winter Olympics
 
 🤝 Contributing
 Contributions are welcome! To contribute:
