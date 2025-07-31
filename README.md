@@ -5,15 +5,15 @@ A deep-dive data analysis project exploring the history and evolution of the Sum
 📊 Overview
 This project aims to answer key analytical questions about the Olympic Games:
 
-🥇 Which countries have dominated the medal tally across the years?
+ Which countries have dominated the medal tally across the years?
 
-🧍‍♂️ How has gender participation evolved in Olympic events?
+ How has gender participation evolved in Olympic events?
 
-⚔️ What are the performance patterns across different sports?
+ What are the performance patterns across different sports?
 
-📆 How has the number of events and sports changed year by year?
+ How has the number of events and sports changed year by year?
 
-👶 What is the distribution of athlete age by sport?
+ What is the distribution of athlete age by sport?
 
 Whether you're a data enthusiast or a sports fan, this project brings the Olympic Games to life through data.
 
