@@ -50,20 +50,20 @@ Run the Notebook
 jupyter notebook Summer_Olympics_Analysis.ipynb
 
 
-📌 Key Visuals & Insights
+ Key Visuals & Insights
 Here are some of the visualizations and insights you'll find:
 
-📈 Medal Trends Over the Years
+ Medal Trends Over the Years
 
-🌍 Top Countries by Sport and Era
+ Top Countries by Sport and Era
 
-👩‍🦰👨‍🦱 Evolution of Gender Participation
+ Evolution of Gender Participation
 
-🔥 Heatmaps of Events by Year
+ Heatmaps of Events by Year
 
-🏃 Athlete Age Distribution by Sport
+ Athlete Age Distribution by Sport
 
-📸 [Add screenshots or animated GIFs here to highlight your visuals]
+ [Add screenshots or animated GIFs here to highlight your visuals]
 
  Future Improvements
  Build interactive dashboards using Streamlit or Plotly Dash
